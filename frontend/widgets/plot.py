@@ -1,3 +1,4 @@
+import matplotlib as mpl
 from PySide6.QtWidgets import (
     QWidget,
     QVBoxLayout,
@@ -14,7 +15,8 @@ from sympy import plot_implicit
 from sympy import Eq
 import matplotlib.pyplot as plt
 
-plt.rcParams["font.sans-serif"] = ["SimHei"]  # 解决中文字体显示异常问题
+mpl.use("Qt5Agg")  # 设置交互式后端
+plt.rcParams["font.family"] = "SimHei"  # 解决中文字体显示异常问题
 plt.rcParams["axes.unicode_minus"] = False  # 解决负号显示异常问题
 
 
@@ -141,7 +143,8 @@ class Plot(QWidget):
             sympy.sympify(self.input_QLineEdit_1.text()),
             (x, left_endpoint, right_endpoint),
             aspect_ratio=[1, 1],
-            ylabel=str(y),
+            xlabel=str(x),
+            ylabel=str(y)
         )
 
     def plot_implicit(self):
@@ -155,6 +158,8 @@ class Plot(QWidget):
             aspect_ratio=[1, 1],
             x_var=x,
             y_var=y,
+            xlabel=str(x),
+            ylabel=str(y),
         )
 
     def plot_3d(self):
@@ -178,8 +183,8 @@ class Plot(QWidget):
             sympy.sympify(self.input_QLineEdit_3.text()),
             (x, intervals[x][0], intervals[x][1]),
             (y, intervals[y][0], intervals[y][1]),
-            x_var=x,
-            y_var=y,
+            xlabel=str(x),
+            ylabel=str(y),
             zlabel=str(z),
         )
 

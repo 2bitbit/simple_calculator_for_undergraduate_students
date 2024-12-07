@@ -6,7 +6,9 @@ from PySide6.QtWidgets import (
 )
 from . import widgets
 from backend.server import Server
-from PySide6.QtGui import QIcon, QFont
+from PySide6.QtGui import QIcon, QFont, QAction
+from PySide6.QtWidgets import QSystemTrayIcon, QMenu
+from PySide6.QtCore import QCoreApplication
 from utils import PATHS
 
 
@@ -28,8 +30,11 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.splitter)
 
         # 美化主窗口
-        self.setWindowTitle("Welcome to Sympy-GUI！")
+        self.setWindowTitle("Welcome to easy-to-use math symbol calculator!")
         self.setWindowIcon(QIcon(PATHS["images_paths"]["icon"]))
+
+        # 设置托盘图标
+        self.set_up_tray_icon()
 
     def set_up_side_bar(self):
         self.sidebar = QListWidget(self)
@@ -64,13 +69,13 @@ class MainWindow(QMainWindow):
         self.home_page = widgets.HomePage(self)
         self.content.addWidget(self.home_page)
         self.content.setCurrentWidget(self.home_page)
-        
+
         self.calculus = widgets.CalculusFrontend(self)
         self.content.addWidget(self.calculus)
-        
+
         self.linear_algebra = widgets.LinearAlgebraFrontend(self)
         self.content.addWidget(self.linear_algebra)
-        
+
         self.differential_equations = widgets.DifferentialEquationsFrontend(self)
         self.content.addWidget(self.differential_equations)
 
@@ -95,3 +100,23 @@ class MainWindow(QMainWindow):
             self.content.setCurrentWidget(self.limit)
         elif text == "Plot":
             self.content.setCurrentWidget(self.plot)
+
+    def set_up_tray_icon(self):
+        self.tray_icon = QSystemTrayIcon(self)
+        self.tray_icon.setIcon(QIcon(PATHS["images_paths"]["tray_icon"]))
+        self.tray_icon.activated.connect(self.toggle_window)
+        self.tray_icon.setVisible(True)
+        # 设置托盘图标右键菜单
+        menu = QMenu()
+        exit_action = QAction("退出", self)
+        exit_action.triggered.connect(QCoreApplication.instance().quit)
+        menu.addAction(exit_action)
+        self.tray_icon.setContextMenu(menu)
+
+    def toggle_window(self, reason):
+        """单击托盘图标切换窗口的显示和隐藏"""
+        if reason == QSystemTrayIcon.Trigger:
+            if self.isVisible():
+                self.hide()
+            else:
+                self.show()

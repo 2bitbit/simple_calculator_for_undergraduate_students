@@ -244,7 +244,7 @@ class CalculusFrontend(QWidget):
         self.update_variable_names_list()
 
     def update_result(self, content: str):
-        """更新显示结果的统一接口，直接把content原文输出到QWebEngineView"""
+        """更新显示结果的统一接口，直接把 content 原文输出到 QWebEngineView"""
         html_content = html_template.format(content=f"$$ {content} $$")
         self.result_QWebEngineView.setHtml(html_content)
 
